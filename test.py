@@ -42,13 +42,14 @@ class Net(nn.Module):
 def imshow(img, ground_truth_labels, predicted_labels, classes, batch_size):
     img = img / 2 + 0.5
     npimg = img.numpy()
+
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
-    label_str = "GT: "
+    label_str = "   Original Value: "
     for i in range(batch_size):
         label_str += f'{classes[ground_truth_labels[i]]} | '
 
-    label_str += "\nPR: "
+    label_str += "\nPredicted Value: "
 
     for j in range(batch_size):
         label_str += f'{classes[predicted_labels[j]]} | '
@@ -134,7 +135,7 @@ if __name__ == '__main__':
     testset = torchvision.datasets.CIFAR10(
         root='./data', train=False, download=True, transform=transform)
     testloader = torch.utils.data.DataLoader(
-        testset, batch_size=batch_size, shuffle=False, num_workers=2)
+        testset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     # Classes in the CIFAR-10 dataset
     classes = ('plane', 'car', 'bird', 'cat',
