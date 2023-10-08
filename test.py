@@ -194,9 +194,6 @@ if __name__ == '__main__':
     labels_array = labels
     images_plot = images
 
-    predicted_array = predicted
-    labels_array = labels
-    images_plot = images
     # Print the true labels and the network's predictions
     print('GroundTruth: ', ' '.join(
         f'{classes[labels[j]]:5s}' for j in range(batch_size)))
