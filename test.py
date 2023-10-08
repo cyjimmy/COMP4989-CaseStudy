@@ -39,20 +39,18 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-# Function to display images
-def imshow(img, ground_truth_labels, predicted_labels, classes):
-    img = img / 2 + 0.5  # Unnormalize the image data
-    npimg = img.numpy()  # Convert PyTorch tensor to NumPy array
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))  # Display the image
+def imshow(img, ground_truth_labels, predicted_labels, classes, batch_size):
+    img = img / 2 + 0.5
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
 
-    # Annotate the image with ground truth and predicted labels
     label_str = "GT: "
-    for i in range(5):
+    for i in range(batch_size):
         label_str += f'{classes[ground_truth_labels[i]]} | '
 
-    label_str += "\nPR     "
+    label_str += "\nPR: "
 
-    for j in range(5):
+    for j in range(batch_size):
         label_str += f'{classes[predicted_labels[j]]} | '
 
     plt.annotate(label_str, (-0.09, -0.8), xycoords="axes fraction",color='black', fontsize=10, weight='bold',
@@ -124,7 +122,7 @@ if __name__ == '__main__':
         [transforms.ToTensor(),
          transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    batch_size = 4
+    batch_size = 5
 
     # Load CIFAR-10 training dataset
     trainset = torchvision.datasets.CIFAR10(
@@ -145,6 +143,7 @@ if __name__ == '__main__':
     # Instantiate the neural network
     net = Net()
     PATH = './cifar_net.pth'
+
     try:
         # Try to load a previously trained model
         net.load_state_dict(torch.load(PATH))
@@ -172,9 +171,11 @@ if __name__ == '__main__':
                 # Print training statistics
                 running_loss += loss.item()
                 if i % 2000 == 1999:
+                if i % 2000 == 1999:
                     print(
                         f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
                     running_loss = 0.0
+
 
         print('Finished Training')
         # Save the trained model
@@ -186,14 +187,22 @@ if __name__ == '__main__':
     # Test the neural network
     dataiter = iter(testloader)
     images, labels = next(dataiter)
+
     outputs = net(images)
     _, predicted = torch.max(outputs, 1)
 
+    predicted_array = predicted
+    labels_array = labels
+    images_plot = images
+
+    predicted_array = predicted
+    labels_array = labels
+    images_plot = images
     # Print the true labels and the network's predictions
     print('GroundTruth: ', ' '.join(
-        f'{classes[labels[j]]:5s}' for j in range(4)))
+        f'{classes[labels[j]]:5s}' for j in range(batch_size)))
     print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}'
-                                  for j in range(4)))
+                                  for j in range(batch_size)))
 
     correct = 0
     total = 0
@@ -220,5 +229,4 @@ if __name__ == '__main__':
         accuracy = 100 * float(correct_count) / total_pred[classname]
         print(f'Accuracy for class: {classname:5s} is {accuracy:.1f} %')
 
-    # Display test images
-    imshow(torchvision.utils.make_grid(images))
+    imshow(torchvision.utils.make_grid(images_plot), labels_array, predicted_array, classes, batch_size)
