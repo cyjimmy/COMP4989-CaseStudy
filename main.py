@@ -66,6 +66,7 @@ def imshow(img, ground_truth_labels, predicted_labels, classes, batch_size):
 
 def visualize_kernels(kernels, axs, num_kernels=6):
     """Visualizes the first `num_kernels` kernels in the given kernels."""
+    """GPT GENERATED"""
     kernels = kernels.detach().cpu().numpy()
     print("Shape of kernels:", kernels.shape)  # Check the shape
 
@@ -91,7 +92,7 @@ def visualize_kernels(kernels, axs, num_kernels=6):
         
 def visualize_convolutions(model, testloader):
     """Visualize convolutions for the given model and testloader."""
-    
+    """GPT GENERATED"""
     activations = []
     conv_layers = [model.conv1, model.pool1, model.conv2, model.pool2]
     layer_names = ['conv1', 'pool1', 'conv2', 'pool2']
@@ -163,6 +164,7 @@ def visualize_convolutions(model, testloader):
 
 # Function to register hooks
 def register_hooks(layers, model):
+    """GPT GENERATED"""
     activations = []
 
     def hook_fn(module, input, output):
@@ -245,7 +247,7 @@ def main():
         torch.save(net.state_dict(), PATH)
 
     # Visualize the convolutions
-    # visualize_convolutions(net, testloader)
+    visualize_convolutions(net, testloader)
 
     # Test the neural network
     dataiter = iter(testloader)
